@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"library/internal/model"
 	"time"
 )
@@ -15,7 +16,7 @@ func NewRepository(db *sql.DB) *BookRepository {
 	return &BookRepository{db: db}
 }
 
-func (r *BookRepository) CreateBook(book model.Book) error {
+func (r *BookRepository) CreateBook(book *model.Book) error {
 	const query = `
 	INSERT INTO books (title, author, publisher, year, isbn, total_copies, available_copies, created_at, updated_at)
 	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
@@ -67,13 +68,14 @@ func (r *BookRepository) GetBookByID(id int64) (*model.Book, error) {
 	return &b, nil
 }
 
-func (r *BookRepository) ListBooks(province string) ([]model.Book, error) {
+func (r *BookRepository) ListBooks() ([]model.Book, error) {
 	rows, err := r.db.Query(`
 	SELECT id, title, author, publisher, year, isbn, total_copies, available_copies
 	FROM books
 	ORDER BY id; 
 	`)
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	defer rows.Close()
@@ -92,10 +94,12 @@ func (r *BookRepository) ListBooks(province string) ([]model.Book, error) {
 			&b.AvailableCopies,
 		)
 		if err != nil {
+			fmt.Println(err)
 			return nil, err
 		}
 		books = append(books, b)
 	}
+	fmt.Println("masuk2")
 	return books, nil
 
 }
@@ -116,7 +120,7 @@ func (r *BookRepository) UpdateBook(book *model.Book, id int64) error {
 
 	_, err := r.db.Exec(
 		query,
-		book.Id,
+		book.Title,
 		book.Author,
 		book.Publisher,
 		book.Year,

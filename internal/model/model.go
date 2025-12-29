@@ -19,3 +19,17 @@ type Book struct {
 type Books struct {
 	Books []Book `json:"books"`
 }
+
+type Lib_user struct {
+	Id        int       `json:"id"`
+	Email     string    `json:"email"`
+	Name      string    `json:"name"`
+	Password  string    `json:"password"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	DeletedAt time.Time `json:"deleted_at"`
+}
+
+type Lib_users struct {
+	Lib_users []Lib_user `json:"lib_users"`
+}
