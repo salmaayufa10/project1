@@ -11,20 +11,12 @@ import (
 
 type BookHandler struct {
 	BookService *service.BookService
-}
-
-type UserHandler struct {
 	UserService *service.UserService
 }
 
-func NewBookHandler(BookService *service.BookService) *BookHandler {
+func NewBookHandler(BookService *service.BookService, UserService *service.UserService) *BookHandler {
 	return &BookHandler{
 		BookService: BookService,
-	}
-}
-
-func NewUserHandler(UserService *service.UserService) *UserHandler {
-	return &UserHandler{
 		UserService: UserService,
 	}
 }
@@ -101,17 +93,4 @@ func (h *BookHandler) DeleteBook(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, nil)
-}
-
-func (h *UserHandler) CreateUser(c echo.Context) error {
-	var user model.Lib_user
-	if err := c.Bind(&user); err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"message": "invalid request"})
-	}
-
-	err := h.UserService.CreateUser(&user)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, echo.Map{"message": err.Error()})
-	}
-	return c.JSON(http.StatusCreated, nil)
 }

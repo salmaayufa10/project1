@@ -25,9 +25,11 @@ func main() {
 		log.Printf("database ping failed (check env for real connection): %v", err)
 	}
 
-	repo := repository.NewRepository(db)
+	repo := repository.NewBookRepository(db)
 	svc := service.NewBookService(repo)
-	h := handler.NewBookHandler(svc)
+	userrepo := repository.NewUserRepository(db)
+	usersvc := service.NewUserService(userrepo)
+	h := handler.NewBookHandler(svc, usersvc)
 
 	e := echo.New()
 	e.Use(middleware.Logger())

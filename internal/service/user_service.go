@@ -27,3 +27,18 @@ func (s *UserService) CreateUser(user *model.Lib_user) error {
 	}
 	return nil
 }
+
+func (s *UserService) GetUserByEmail(email string) (*model.Lib_user, error) {
+	if email == "" {
+		return nil, errors.New("Email is required")
+	}
+
+	data, err := s.UserRepository.GetUserByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+	if data == nil {
+		return nil, errors.New("user not found")
+	}
+	return data, nil
+}
